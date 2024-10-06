@@ -1,0 +1,112 @@
+﻿@using SearchProjectGitHub.BusinessLayer.Models.DTO;
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <main class="form-signin">
+        <h1 class="h3 mb-3 fw-normal">Введите строку для поиска</h1>
+
+        <div class="form-floating">
+            <input class="form-control" id="SearchString" placeholder="Поиск">
+            <label for="floatingInput">Поиск</label>
+        </div>
+
+        <button class="w-100 btn btn-lg btn-primary" type="submit" id="ButtonSearch">Найти</button>
+    </main>
+</div>
+
+
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3" id="ProjectList" style="margin-top: 30px;">
+</div>
+<div id="Pagination"></div>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+
+        $("#ButtonSearch").on("click", function () {       
+            var searchStringValue = $("#SearchString").val();
+
+            findGet(searchStringValue, 1, function (response) {
+                if (response.countPages === 0) {
+                    findPost(searchStringValue, function (response) {
+                        findGet(searchStringValue, 1, function (response) {
+                            if (response.countPages === 0) {
+                                alert("Поиск не дал результатов.")
+                            }
+                            else {
+                                updateProjects(response.projects)
+                                updatePagination(response.countPages)
+                            }
+                        })
+                    })
+                }
+                else {
+                    updateProjects(response.projects)
+                    updatePagination(response.countPages)
+                }
+            })
+        })
+    })
+
+    function findGet(searchStringValue, pageNumberValue, callback) {
+        $.ajax({
+            type: "GET",
+            url: 'api/find',
+            data: { searchString: searchStringValue, pageNumber: pageNumberValue },
+            success: callback,
+        })
+    }
+
+    function findPost(searchStringValue, callback) {
+        let jsonData = JSON.stringify({ searchString: searchStringValue })
+
+        $.ajax({
+            type: "POST",
+            url: 'api/find',
+            data: jsonData,
+            success: callback,
+            contentType: 'application/json',
+        })
+    }
+    function updateProjects(projects){
+        $("#ProjectList").empty()
+
+        projects.forEach(
+            project => {
+                $("#ProjectList").append(
+                    `<div class="col">
+                        <a href="${project.linkRepo}">
+                            <h2>${project.projectName}</h2>
+                            <p>Автор: ${project.author}</p>
+                            <p>Звёзд: ${project.stargazers}</p>
+                            <p>Просмотров: ${project.watchers}</p>
+                        </a>
+                    </div>`
+                )
+            })
+    }
+
+    function updatePagination(countPages) {
+        $("#Pagination").empty()
+
+        let pages = ''
+        for (let i = 1; i <= countPages; i++) {
+            pages += `<li class="page-item"><a class="page-link" href="#" onclick="changePage(this.innerText)">${i}</a></li>`
+        }
+
+        $("#Pagination").append(`<nav aria-label="Page navigation example"><ul class="pagination">${pages}</ul></nav>`)
+    }
+
+    function changePage(pageNumber) {
+        var searchStringValue = $("#SearchString").val();
+
+        findGet(searchStringValue, pageNumber, function (response) {
+            updateProjects(response.projects)
+        })
+    }
+
+</script>
