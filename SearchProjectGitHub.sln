@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34723.18
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SearchProjectGitHub.Web", "SearchProjectGitHubWeb\SearchProjectGitHub.Web.csproj", "{CDA0134C-3459-4643-AF60-1D578506FFB8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SearchProjectGitHub.Web", "SearchProjectGitHub.Web\SearchProjectGitHub.Web.csproj", "{CDA0134C-3459-4643-AF60-1D578506FFB8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SearchProjectGitHub.DataAccess", "SearchProjectGitHub.DataAccess\SearchProjectGitHub.DataAccess.csproj", "{9175B35E-8BBA-4177-874D-0C9A119E8CB4}"
 EndProject
